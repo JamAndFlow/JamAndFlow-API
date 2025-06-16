@@ -21,6 +21,11 @@
    - A. for windows: `./venv/Scripts/activate` 
    - B. for macOS/Linux: `source venv/bin/activate`
 
+5. Run FastAPI server through uvicorn:
+   ```bash
+   uvicorn app.main:app --host localhost --port 80
+   ```
+
 
 # TODO: Add docker setup instructions below 
 
