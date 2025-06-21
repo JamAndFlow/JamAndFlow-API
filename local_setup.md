@@ -1,6 +1,6 @@
 # Follow this steps to set up your local environment for development.
 
-# Requirements: 
+# Requirements:
 # - Python 3.13
 
 
@@ -18,7 +18,7 @@
    ```
 
 4. Activate the virtual environment:
-   - A. for windows: `./venv/Scripts/activate` 
+   - A. for windows: `./venv/Scripts/activate`
    - B. for macOS/Linux: `source venv/bin/activate`
 
 5. Run FastAPI server through uvicorn:
@@ -29,6 +29,6 @@
    ```
 
 
-# TODO: Add docker setup instructions below 
+# TODO: Add docker setup instructions below
 
 # TODO: Add testing instructions below
