@@ -6,5 +6,5 @@ API for the JamAndFlow application
 - Database: PostgreSQL
 - ORM: SQLAlchemy
 - Migration Tool: Alembic
-- Authentication: OAuth2 with JWT tokens
+- Authentication: OAuth2 with JWT tokens | google OAuth2 | github OAuth2
 - Documentation: OpenAPI (Swagger UI)

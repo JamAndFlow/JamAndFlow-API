@@ -1,7 +1,7 @@
 # Follow this steps to set up your local environment for development.
 
 # Requirements: 
-# - Python 3.12.1
+# - Python 3.13
 
 
 1. Clone the repository:
@@ -24,6 +24,8 @@
 5. Run FastAPI server through uvicorn:
    ```bash
    uvicorn app.main:app --host localhost --port 80
+   or
+   uvicorn app.main:app --reload
    ```
 
 
