@@ -1,7 +1,5 @@
 # Setting Up and Running Pre-commit Hooks
 
-# Setting Up and Running Pre-commit Hooks
-
 1. Install pre-commit if you haven't already:
    ```bash
    pip install pre-commit
