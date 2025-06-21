@@ -1,8 +1,19 @@
+# from functools import lru_cache
 from fastapi import FastAPI
 
 from app.api.main import api_router
+from app.settings import settings
 
 app = FastAPI()
+
+# Uncomment the following lines if you want to use caching for settings
+# @lru_cache()
+# def get_settings():
+#     """
+#     Get application settings.
+#     This function uses caching to avoid reloading settings on every request.
+#     """
+#     return settings
 
 
 @app.get("/health")
@@ -13,7 +24,7 @@ def health_check():
     return {"status": "ok"}
 
 
-app.include_router(api_router, prefix="/api/v1", tags=["v1"])
+app.include_router(api_router, prefix=settings.API_V1_STR, tags=["v1"])
 
 # TODO:
 

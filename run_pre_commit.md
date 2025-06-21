@@ -11,9 +11,9 @@
    pre-commit install
    ```
 
-3. stage your changes:
+3. stage your changes: and run `pre-commit` to check if your staged files pass the checks.
 
-4. Run pre-commit to check your staged files:
+4. Run pre-commit to check your every files:
    ```bash
    pre-commit run --all-files
    ```
