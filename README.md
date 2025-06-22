@@ -3,7 +3,8 @@ API for the JamAndFlow application
 
 # Tech Stack
 - REST API Framework: FastAPI
-- Database: <Yet to be determined>
-- Authentication: OAuth2 with JWT tokens
+- Database: PostgreSQL
+- ORM: SQLAlchemy
+- Migration Tool: Alembic
+- Authentication: OAuth2 with JWT tokens | google OAuth2 | github OAuth2
 - Documentation: OpenAPI (Swagger UI)
-

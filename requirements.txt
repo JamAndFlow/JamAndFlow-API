@@ -1,0 +1,4 @@
+fastapi[standard]
+uvicorn[standard]
+pre-commit
+pydantic-settings
