@@ -5,7 +5,8 @@ WORKDIR /app
 RUN apk update && apk upgrade --no-cache \
  && apk add --no-cache \
     gcc musl-dev libffi-dev build-base \
-    libjpeg-turbo-dev zlib-dev
+    libjpeg-turbo-dev zlib-dev \
+    postgresql-client
 
 COPY requirements.txt .
 RUN pip install --no-cache-dir --upgrade pip \
@@ -15,4 +16,8 @@ COPY . .
 
 EXPOSE 8000
 
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+ENV PYTHONPATH=/app
+ENTRYPOINT ["/entrypoint.sh"]
