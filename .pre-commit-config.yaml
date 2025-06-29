@@ -26,8 +26,12 @@ repos:
     -   id: black
         name: black (Python code formatter)
         types: [python]
+        args: ['--line-length=88']
 
 -   repo: https://github.com/pycqa/flake8
     rev: 7.3.0
     hooks:
     -   id: flake8
+        name: flake8 (Python style guide enforcement)
+        types: [python]
+        args: ['--max-line-length=88']
