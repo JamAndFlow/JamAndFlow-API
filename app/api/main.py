@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 
+from app.api.routes import user
+
 api_router = APIRouter()
 
-# TODO: include all the API routes here
-# e.g: api_router.include_router(user_router, prefix="/users", tags=["users"])
-# Remove this comment once done.
+api_router.include_router(user.router, prefix="/users", tags=["users"])

@@ -14,7 +14,7 @@ class AuthType(str, Enum):
 
 class UserBase(BaseModel):
     email: EmailStr
-    full_name: str
+    name: str
     is_active: bool = True
     auth_type: AuthType = AuthType.local
     provider_id: Optional[str] = None
@@ -26,7 +26,7 @@ class UserCreate(UserBase):
 
 class UserUpdate(BaseModel):
     email: Optional[EmailStr] = None
-    full_name: Optional[str] = None
+    name: Optional[str] = None
     password: Optional[str] = None
     is_active: Optional[bool] = True
     auth_type: Optional[AuthType] = None
