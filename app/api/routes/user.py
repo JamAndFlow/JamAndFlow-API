@@ -5,7 +5,6 @@ from sqlalchemy.orm import Session
 from app.config.database import get_db
 from app.schemas.users import (
     OTPVerifyRequest,
-    ResendOTPRequest,
     Token,
     UserCreate,
     UserResponse,
@@ -15,7 +14,6 @@ from app.services.user import (
     get_current_user,
     login_user,
     register_with_otp,
-    resend_otp,
     verify_otp_and_create_user,
 )
 from pydantic import BaseModel, EmailStr

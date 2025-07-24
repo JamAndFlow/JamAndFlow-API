@@ -1,7 +1,8 @@
 import smtplib
-from app.settings import settings
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+
+from app.settings import settings
 
 
 def send_otp_email(to_email: str, otp_code: str):
