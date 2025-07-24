@@ -1,7 +1,7 @@
-from datetime import datetime
 
-from app.config.database import Base
+from datetime import datetime
 from sqlalchemy import Column, DateTime, Integer, String
+from app.config.database import Base
 
 
 class OTP(Base):
