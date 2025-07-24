@@ -10,13 +10,11 @@ from app.schemas.users import (
     UserResponse,
 )
 from app.services.user import (
-    create_user,
     get_current_user,
     login_user,
     register_with_otp,
     verify_otp_and_create_user,
 )
-from pydantic import BaseModel, EmailStr
 
 
 router = APIRouter()
