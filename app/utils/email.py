@@ -1,7 +1,8 @@
 import smtplib
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
 from app.settings import settings
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+
 
 def send_otp_email(to_email: str, otp_code: str):
     subject = "JamAndFlow OTP Verification"

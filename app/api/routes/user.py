@@ -3,13 +3,23 @@ from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 
 from app.config.database import get_db
-from app.schemas.users import Token, UserCreate, UserResponse, OTPVerifyRequest
+from app.schemas.users import (
+    OTPVerifyRequest,
+    ResendOTPRequest,
+    Token,
+    UserCreate,
+    UserResponse,
+)
 from app.services.user import (
+    create_user,
     get_current_user,
     login_user,
     register_with_otp,
+    resend_otp,
     verify_otp_and_create_user,
 )
+from pydantic import BaseModel, EmailStr
+
 
 router = APIRouter()
 

@@ -1,6 +1,6 @@
-from datetime import datetime, timedelta
 import random
 import re
+from datetime import datetime, timedelta
 
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
@@ -8,8 +8,8 @@ from jose import JWTError, jwt
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
-from app.models.user import AuthType, User
 from app.models.otp import OTP
+from app.models.user import AuthType, User
 from app.schemas.users import UserCreate
 from app.settings import settings
 from app.utils.auth import create_access_token, hash_password, verify_password
