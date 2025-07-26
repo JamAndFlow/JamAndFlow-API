@@ -86,4 +86,8 @@ async def auth_github_callback(request: Request, db: Session = Depends(get_db)):
         )
         return JSONResponse({"access_token": access_token, "token_type": "bearer"})
     except OAuthError as e:
-        return JSONResponse({"error": str(e)}, status_code=400)
+        # Log the detailed exception for debugging purposes
+        import logging
+        logging.error("OAuthError occurred during GitHub authentication", exc_info=e)
+        # Return a generic error message to the client
+        return JSONResponse({"error": "An error occurred during authentication. Please try again later."}, status_code=400)
