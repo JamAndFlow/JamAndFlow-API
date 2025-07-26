@@ -24,6 +24,17 @@ class Settings(BaseSettings):
     DEBUG: bool = False
     VERSION: str = "1.0.0"
 
+    # Email
+    FROM_EMAIL: str
+    SMTP_PASSWORD: str
+    SMTP_USERNAME: str
+    SMTP_SERVER: str = "smtp.gmail.com"
+    SMTP_PORT: int = 587
+
+    # github
+    GITHUB_CLIENT_ID: str
+    GITHUB_CLIENT_SECRET: str
+
     class Config:
         """Configuration for the settings."""
 
