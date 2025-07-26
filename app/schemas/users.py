@@ -5,6 +5,11 @@ from typing import Optional
 from pydantic import BaseModel, EmailStr
 
 
+class OTPVerifyRequest(BaseModel):
+    email: EmailStr
+    otp_code: str
+
+
 class AuthType(str, Enum):
     local = "local"
     google = "google"

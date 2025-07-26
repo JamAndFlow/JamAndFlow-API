@@ -1,17 +1,24 @@
+
 from fastapi import APIRouter, Depends
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 
 from app.config.database import get_db
-from app.schemas.users import Token, UserCreate, UserResponse
-from app.services.user import create_user, get_current_user, login_user
+from app.schemas.users import OTPVerifyRequest, Token, UserCreate, UserResponse
+from app.services.user import (get_current_user, login_user, register_with_otp,
+                               verify_otp_and_create_user)
 
 router = APIRouter()
 
 
-@router.post("/register", response_model=UserResponse, status_code=201)
+@router.post("/register", status_code=201)
 def register_user(user_in: UserCreate, db: Session = Depends(get_db)):
-    user = create_user(db, user_in)
+    return register_with_otp(db, user_in)
+
+
+@router.post("/verify-otp", response_model=UserResponse)
+def verify_otp(request: OTPVerifyRequest, db: Session = Depends(get_db)):
+    user = verify_otp_and_create_user(db, request.email, request.otp_code)
     return user
 
 
