@@ -31,6 +31,10 @@ class Settings(BaseSettings):
     SMTP_SERVER: str = "smtp.gmail.com"
     SMTP_PORT: int = 587
 
+    # github
+    GITHUB_CLIENT_ID: str
+    GITHUB_CLIENT_SECRET: str
+
     class Config:
         """Configuration for the settings."""
 
