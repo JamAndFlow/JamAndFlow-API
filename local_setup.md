@@ -31,11 +31,17 @@
 ## Settings up environment variables
 6. Create a `.env` file in the root directory of the project and add the following environment variables:
    ```env
-   POSTGRES_USER=
-   POSTGRES_PASSWORD=
+   POSTGRES_USER=<POSTGRES_USER>
+   POSTGRES_PASSWORD=<POSTGRES_PASSWORD>
    POSTGRES_DB=JamAndFlow
    POSTGRES_HOST=db
    POSTGRES_PORT=5432
+   FROM_EMAIL=<EMAIL_ID_TO_SEND_EMAILS_FROM>
+   SMTP_PASSWORD=<SMTP_PASSWORD>
+   SMTP_USERNAME=<EMAIL_ID_TO_SEND_EMAILS_FROM>
+   SECRET_KEY=<SECRET_KEY>
+   ALGORITHM=<ALGORITHM>
+   ACCESS_TOKEN_EXPIRE_MINUTES=<ACCESS_TOKEN_EXPIRE_MINUTES>
    ```
 
 # TODO: Add docker setup instructions below
@@ -55,10 +61,34 @@
    docker compose down
    ```
 
-# How to crete a new migration
-1. go to root directory
-2. run the following command:
+# How to create a new migration
+1. Accessing the jam_and_flow_api Docker Container
    ```bash
-   alembic -c app/alembic.ini revision --autogenerate -m "testing"
+   docker exec -it jam_and_flow_api bash
    ```
+2. Run command:
+   ```bash
+   cd app
+   alembic revision --autogenerate -m "migration_name"
+   alembic upgrade head
+   ```
+
+# How to inspect postgres table
+1. Accessing the postgres_db Docker Container
+   ```bash
+   docker exec -it postgres_db bash
+   ```
+2. Run command:
+   ```bash
+   psql -U postgres -d JamAndFlow
+   ```
+3. To list tables:
+   ```sql
+   \dt
+   ```
+4. To view a specific table:
+   ```sql
+   SELECT * FROM table_name;
+   ```
+
 # TODO: Add testing instructions below
