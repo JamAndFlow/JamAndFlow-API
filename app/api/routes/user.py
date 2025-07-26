@@ -1,12 +1,15 @@
-
 from fastapi import APIRouter, Depends
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 
 from app.config.database import get_db
 from app.schemas.users import OTPVerifyRequest, Token, UserCreate, UserResponse
-from app.services.user import (get_current_user, login_user, register_with_otp,
-                               verify_otp_and_create_user)
+from app.services.user import (
+    get_current_user,
+    login_user,
+    register_with_otp,
+    verify_otp_and_create_user,
+)
 
 router = APIRouter()
 
@@ -29,6 +32,12 @@ def login(
     return login_user(db, form_data.username, form_data.password)
 
 
-@router.get("/me", response_model=str)
+@router.get("/me")
 def read_users_me(current_user=Depends(get_current_user)):
-    return current_user
+    if hasattr(current_user, "id"):
+        return {
+            "id": current_user.id,
+            "email": current_user.email,
+            "name": current_user.name,
+        }
+    return {"user": current_user}

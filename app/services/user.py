@@ -3,11 +3,13 @@ import re
 from datetime import datetime, timedelta
 
 from fastapi import Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordBearer
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from jose import JWTError, jwt
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session as _Session
 
+from app.config.database import get_db
 from app.models.otp import OTP
 from app.models.user import AuthType, User
 from app.schemas.users import UserCreate
@@ -15,7 +17,7 @@ from app.settings import settings
 from app.utils.auth import create_access_token, hash_password, verify_password
 from app.utils.email import send_otp_email
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/users/login")
+security = HTTPBearer()
 
 
 def create_user(db: Session, user_in: UserCreate) -> User:
@@ -63,12 +65,17 @@ def login_user(db: Session, email: str, password: str):
     return {"access_token": access_token, "token_type": "bearer"}
 
 
-def get_current_user(token: str = Depends(oauth2_scheme)):
+def get_current_user(
+    credentials: HTTPAuthorizationCredentials = Depends(security),
+    db: _Session = Depends(get_db),
+):
+    token = credentials.credentials
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
         headers={"WWW-Authenticate": "Bearer"},
     )
+
     try:
         payload = jwt.decode(
             token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM]
@@ -76,28 +83,45 @@ def get_current_user(token: str = Depends(oauth2_scheme)):
         user_id: str = payload.get("sub")
         if user_id is None:
             raise credentials_exception
-        # Optionally, fetch user from DB here
-        return user_id
+        user = db.query(User).filter(User.id == user_id).first()
+        if user is None:
+            raise credentials_exception
+        return user
     except JWTError:
-        raise credentials_exception
+        raise JWTError("JWT validation failed")
 
 
+# TODO: move this function to a utils module or similar
 def generate_otp():
     return str(random.randint(100000, 999999))
 
 
+# TODO: move this function to a utils module or similar
 def validate_strong_password(password: str):
     # At least 8 chars, one uppercase, one lowercase, one digit, one special char
     if not password or len(password) < 8:
-        raise HTTPException(status_code=400, detail="Password must be at least 8 characters long.")
+        raise HTTPException(
+            status_code=400, detail="Password must be at least 8 characters long."
+        )
     if not re.search(r"[A-Z]", password):
-        raise HTTPException(status_code=400, detail="Password must contain at least one uppercase letter.")
+        raise HTTPException(
+            status_code=400,
+            detail="Password must contain at least one uppercase letter.",
+        )
     if not re.search(r"[a-z]", password):
-        raise HTTPException(status_code=400, detail="Password must contain at least one lowercase letter.")
+        raise HTTPException(
+            status_code=400,
+            detail="Password must contain at least one lowercase letter.",
+        )
     if not re.search(r"\d", password):
-        raise HTTPException(status_code=400, detail="Password must contain at least one digit.")
+        raise HTTPException(
+            status_code=400, detail="Password must contain at least one digit."
+        )
     if not re.search(r"[!@#$%^&*(),.?\":{}|<>]", password):
-        raise HTTPException(status_code=400, detail="Password must contain at least one special character.")
+        raise HTTPException(
+            status_code=400,
+            detail="Password must contain at least one special character.",
+        )
 
 
 def register_with_otp(db: Session, user_in: UserCreate):
@@ -116,11 +140,11 @@ def register_with_otp(db: Session, user_in: UserCreate):
         otp_code=otp_code,
         name=user_in.name,
         password=hashed_password,
-        is_active=1 if getattr(user_in, 'is_active', True) else 0,
-        provider_id=getattr(user_in, 'provider_id', None),
-        auth_type=user_in.auth_type.value if hasattr(user_in, 'auth_type') else 'local',
+        is_active=1 if getattr(user_in, "is_active", True) else 0,
+        provider_id=getattr(user_in, "provider_id", None),
+        auth_type=user_in.auth_type.value if hasattr(user_in, "auth_type") else "local",
         created_at=datetime.utcnow(),
-        expires_at=expires_at
+        expires_at=expires_at,
     )
     db.add(otp_entry)
     db.commit()
@@ -130,7 +154,9 @@ def register_with_otp(db: Session, user_in: UserCreate):
 
 
 def verify_otp_and_create_user(db: Session, email: str, otp_code: str):
-    otp_entry = db.query(OTP).filter(OTP.email == email, OTP.otp_code == otp_code).first()
+    otp_entry = (
+        db.query(OTP).filter(OTP.email == email, OTP.otp_code == otp_code).first()
+    )
     if not otp_entry or otp_entry.is_expired():
         raise HTTPException(status_code=400, detail="Invalid or expired OTP")
     # Check if user already exists
@@ -140,6 +166,7 @@ def verify_otp_and_create_user(db: Session, email: str, otp_code: str):
         db.commit()
         raise HTTPException(status_code=400, detail="User already registered.")
     # Create user from OTP details
+    # TODO: use existing user creation logic
     user = User(
         email=otp_entry.email,
         name=otp_entry.name,
