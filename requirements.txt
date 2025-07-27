@@ -11,3 +11,6 @@ pydantic-settings
 python-multipart
 passlib[bcrypt]
 python-jose
+Authlib
+itsdangerous
+requests

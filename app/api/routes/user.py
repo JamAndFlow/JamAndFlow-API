@@ -1,4 +1,3 @@
-
 from fastapi import APIRouter, Depends
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
@@ -29,6 +28,12 @@ def login(
     return login_user(db, form_data.username, form_data.password)
 
 
-@router.get("/me", response_model=str)
+@router.get("/me")
 def read_users_me(current_user=Depends(get_current_user)):
-    return current_user
+    if hasattr(current_user, "id"):
+        return {
+            "id": current_user.id,
+            "email": current_user.email,
+            "name": current_user.name,
+        }
+    return {"user": current_user}

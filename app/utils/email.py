@@ -30,10 +30,10 @@ def send_otp_email(to_email: str, otp_code: str):
     </html>
     """
     msg = MIMEMultipart()
-    msg['From'] = settings.FROM_EMAIL
-    msg['To'] = to_email
-    msg['Subject'] = subject
-    msg.attach(MIMEText(html, 'html'))
+    msg["From"] = settings.FROM_EMAIL
+    msg["To"] = to_email
+    msg["Subject"] = subject
+    msg.attach(MIMEText(html, "html"))
 
     try:
         with smtplib.SMTP(settings.SMTP_SERVER, 587) as server:
