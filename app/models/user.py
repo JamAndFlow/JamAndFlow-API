@@ -7,6 +7,7 @@ from sqlalchemy import Integer, String
 from app.config.database import Base
 
 
+# TODO: removed as AuthType is now in app.schemas.users
 class AuthType(Enum):
     LOCAL = "local"
     GOOGLE = "google"
