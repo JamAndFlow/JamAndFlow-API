@@ -5,6 +5,7 @@ from fastapi import HTTPException
 from fastapi.responses import JSONResponse
 
 from app.config.github import github
+from app.config.google import google
 from app.models.user import User
 from app.schemas.users import AuthType, UserCreate
 from app.services.user import create_user
@@ -46,6 +47,21 @@ def create_github_user(profile, email: str, db):
     return user
 
 
+def create_google_user(profile, email: str, db):
+    """Create a new user from Google profile data."""
+    name = profile.get("name") or profile.get("email")
+    provider_id = str(profile.get("id"))
+    user_in = UserCreate(
+        email=email,
+        name=name,
+        is_active=True,
+        provider_id=provider_id,
+        auth_type=AuthType.google,
+    )
+    user = create_user(db, user_in)
+    return user
+
+
 async def login_github_user(request, db):
     """Login user via GitHub OAuth. Returns an access token if successful. Raises HTTPException if authentication fails."""
     try:
@@ -81,6 +97,34 @@ async def login_github_user(request, db):
         return JSONResponse({"access_token": access_token, "token_type": "bearer"})
     except OAuthError as e:
         logging.error("OAuthError occurred during GitHub authentication", exc_info=e)
+        return JSONResponse(
+            {
+                "error": "An error occurred during authentication. Please try again later."
+            },
+            status_code=400,
+        )
+
+
+async def login_google_user(request, db):
+    """Login user via Google OAuth. Returns an access token if successful. Raises HTTPException if authentication fails."""
+    try:
+        token = await google.authorize_access_token(request)
+        resp = await google.get("userinfo", token=token)
+        profile = resp.json()
+        email = profile.get("email")
+        if not email:
+            raise HTTPException(
+                status_code=400, detail="Google account has no accessible email."
+            )
+
+        user = db.query(User).filter(User.email == email).first()
+        if not user:
+            user = create_google_user(profile, email, db)
+
+        access_token = create_access_token({"sub": str(user.id), "email": user.email})
+        return JSONResponse({"access_token": access_token, "token_type": "bearer"})
+    except OAuthError as e:
+        logging.error("OAuthError occurred during Google authentication", exc_info=e)
         return JSONResponse(
             {
                 "error": "An error occurred during authentication. Please try again later."
