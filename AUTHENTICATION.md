@@ -1,6 +1,6 @@
 # Authentication Guide
 
-This project supports authentication via both username/password and GitHub OAuth. All authenticated API endpoints require a valid JWT Bearer token.
+This project supports authentication via username/password, GitHub OAuth, and Google OAuth. All authenticated API endpoints require a valid JWT Bearer token.
 
 ## 1. Username/Password Login
 
@@ -11,13 +11,20 @@ This project supports authentication via both username/password and GitHub OAuth
    - `POST /api/v1/users/login` with form data `username` and `password`.
    - The response will include `{ "access_token": "<JWT>", "token_type": "bearer" }`.
 
+
 ## 2. GitHub OAuth Login
 
 1. Go to `/api/v1/auth/github/login` in your browser.
 2. Authorize the app on GitHub.
 3. You will be redirected back and receive a JSON response with `{ "access_token": "<JWT>", "token_type": "bearer" }`.
 
-## 3. Using the Token in Swagger UI
+## 3. Google OAuth Login
+
+1. Go to `/api/v1/auth/google/login` in your browser.
+2. Authorize the app with your Google account.
+3. You will be redirected back and receive a JSON response with `{ "access_token": "<JWT>", "token_type": "bearer" }`.
+
+## 4. Using the Token in Swagger UI
 
 - Open `/docs` (Swagger UI).
 - Click the "Authorize" button.
@@ -25,18 +32,18 @@ This project supports authentication via both username/password and GitHub OAuth
 - Click "Authorize".
 - You can now access all authenticated endpoints.
 
-## 4. Using the Token in API Clients (e.g., Postman)
+## 5. Using the Token in API Clients (e.g., Postman)
 
 - Set the `Authorization` header:
   ```
   Authorization: <your_token>
   ```
 
-## 5. Notes
+## 6. Notes
 
 - The same JWT token format is used for both login methods.
 - If you get a credentials error, ensure you are pasting only the token (not `Bearer <token>`) in Swagger UI.
-- For GitHub login, the user is auto-registered on first login if not already present.
+- For GitHub and Google login, the user is auto-registered on first login if not already present.
 
 ---
 
