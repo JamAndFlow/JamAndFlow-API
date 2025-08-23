@@ -2,6 +2,9 @@ from typing import Any, Dict, Optional
 
 import requests
 
+from app.utils.exceptions import (AppException, RequestConnectionError,
+                                  RequestHTTPError, RequestTimeoutError)
+
 
 def make_request(
     method: str,
@@ -14,16 +17,6 @@ def make_request(
 ) -> Dict[str, Any]:
     """
     Generic HTTP request utility.
-    Args:
-        method: HTTP method (GET, POST, etc.)
-        url: Full URL to request
-        params: Query parameters
-        data: Form data
-        json: JSON body
-        headers: HTTP headers
-        timeout: Timeout in seconds
-    Returns:
-        Response JSON or error dict
     """
     try:
         response = requests.request(
@@ -37,5 +30,28 @@ def make_request(
         )
         response.raise_for_status()
         return response.json()
-    except requests.RequestException as e:
-        return {"error": "Request failed", "details": str(e)}
+
+    except requests.Timeout as exc:
+        raise RequestTimeoutError(
+            "The request timed out", context={"url": url}
+        ) from exc
+
+    except requests.ConnectionError as exc:
+        raise RequestConnectionError(
+            "Failed to connect to the service", context={"url": url}
+        ) from exc
+
+    except requests.HTTPError as exc:
+        status_code = exc.response.status_code if exc.response else 500
+        message = exc.response.text if exc.response else str(exc)
+        raise RequestHTTPError(
+            detail=message, status_code=status_code, context={"url": url}
+        ) from exc
+
+    except Exception as exc:
+        # Catch-all wrapped in your base AppException
+        raise AppException(
+            "Unexpected error in HTTP request",
+            code="unexpected_request_error",
+            context={"url": url, "error": str(exc)},
+        ) from exc

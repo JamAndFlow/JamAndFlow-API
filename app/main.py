@@ -1,12 +1,59 @@
 # from functools import lru_cache
-from fastapi import FastAPI
+import logging
+
+from fastapi import FastAPI, Request
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.openapi.utils import get_openapi
+from fastapi.responses import JSONResponse
 from starlette.middleware.sessions import SessionMiddleware
 
 from app.api.main import api_router
+from app.schemas.exceptions import ErrorResponse
 from app.settings import settings
+from app.utils.exceptions import AppException
+
+logger = logging.getLogger(__name__)
 
 app = FastAPI()
+
+origins = [
+    "http://localhost:5173",  # Vite local dev
+    "http://127.0.0.1:5173",
+    "http://yourdomain.com",  # replace with final domain
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,  # origins allowed
+    allow_credentials=True,
+    allow_methods=["*"],  # allow all HTTP methods
+    allow_headers=["*"],  # allow all headers
+)
+
+
+@app.exception_handler(AppException)
+async def app_exception_handler(_request: Request, exc: AppException):
+    logger.error("AppException: %s | Context: %s", exc.detail, exc.context)
+    return JSONResponse(
+        status_code=exc.status_code,
+        content=ErrorResponse(
+            detail=exc.detail,
+            code=exc.code,
+            status_code=exc.status_code,
+            context=exc.context,
+        ).model_dump(),
+    )
+
+
+@app.exception_handler(Exception)
+async def unhandled_exception_handler(_request: Request, exc: Exception):
+    logger.exception("Unhandled Exception occurred : %s", exc)
+    return JSONResponse(
+        status_code=500,
+        content=ErrorResponse(
+            detail="Internal Server Error", code="internal_error", status_code=500
+        ).model_dump(),
+    )
 
 
 def custom_openapi():
