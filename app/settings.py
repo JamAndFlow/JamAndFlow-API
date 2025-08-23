@@ -39,6 +39,9 @@ class Settings(BaseSettings):
     GOOGLE_CLIENT_ID: str
     GOOGLE_CLIENT_SECRET: str
 
+    # Services endpoints
+    GENERATOR_SERVICE_URL: str
+
     class Config:
         """Configuration for the settings."""
 

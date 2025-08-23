@@ -36,6 +36,8 @@
    POSTGRES_DB=JamAndFlow
    POSTGRES_HOST=db
    POSTGRES_PORT=5432
+
+   GENERATOR_SERVICE_URL=http://generator-service:8000
    ```
 
 # TODO: Add docker setup instructions below
