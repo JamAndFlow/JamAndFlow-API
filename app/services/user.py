@@ -11,8 +11,12 @@ from app.models.otp import OTP
 from app.models.user import AuthType, User
 from app.schemas.users import UserCreate
 from app.settings import settings
-from app.utils.auth import (cleanup_expired_otps, generate_otp, hash_password,
-                            validate_strong_password)
+from app.utils.auth import (
+    cleanup_expired_otps,
+    generate_otp,
+    hash_password,
+    validate_strong_password,
+)
 from app.utils.email import send_otp_email
 
 security = HTTPBearer()

@@ -2,8 +2,12 @@ from typing import Any, Dict, Optional
 
 import requests
 
-from app.utils.exceptions import (AppException, RequestConnectionError,
-                                  RequestHTTPError, RequestTimeoutError)
+from app.utils.exceptions import (
+    AppException,
+    RequestConnectionError,
+    RequestHTTPError,
+    RequestTimeoutError,
+)
 
 
 def make_request(
