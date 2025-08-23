@@ -103,8 +103,5 @@ def health_check():
 app.include_router(api_router, prefix=settings.API_V1_STR, tags=["v1"])
 
 # TODO:
-
-# add middleware for CORS
 # add middleware for request and response
 # add basic logging setup
-# add exception handling for common errors
