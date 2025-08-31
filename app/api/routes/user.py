@@ -36,5 +36,7 @@ def read_users_me(current_user=Depends(get_current_user)):
             "id": current_user.id,
             "email": current_user.email,
             "name": current_user.name,
+            "role": current_user.role,
+            "auth_type": current_user.auth_type,
         }
     return {"user": current_user}

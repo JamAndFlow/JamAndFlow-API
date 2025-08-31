@@ -28,7 +28,7 @@ def create_user(db: Session, user_in: UserCreate) -> User:
     if existing:
         raise HTTPException(status_code=400, detail="Email already registered")
 
-    hashed_password = hash_password(user_in.password) if user_in.password else None
+    hashed_password = user_in.password if user_in.password else None
     user = User(
         email=user_in.email,
         name=user_in.name,
@@ -96,9 +96,6 @@ def register_with_otp(db: Session, user_in: UserCreate):
         name=user_in.name,
         password=hashed_password,
         is_active=1 if getattr(user_in, "is_active", True) else 0,
-        provider_id=getattr(user_in, "provider_id", None),
-        # TODO: update this to use only local auth type
-        auth_type=user_in.auth_type.value if hasattr(user_in, "auth_type") else "local",
         created_at=datetime.utcnow(),
         expires_at=expires_at,
     )
@@ -128,8 +125,6 @@ def verify_otp_and_create_user(db: Session, email: str, otp_code: str):
         name=otp_entry.name,
         password=otp_entry.password,  # Already hashed
         is_active=bool(otp_entry.is_active),
-        provider_id=otp_entry.provider_id,
-        auth_type=otp_entry.auth_type,
     )
     try:
         user = create_user(db, user_in)

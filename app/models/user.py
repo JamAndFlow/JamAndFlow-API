@@ -1,18 +1,9 @@
-from enum import Enum
-
 from sqlalchemy import Boolean, Column, DateTime
 from sqlalchemy import Enum as SQLEnum
 from sqlalchemy import Integer, String
 
 from app.config.database import Base
-
-
-# TODO: removed as AuthType is now in app.schemas.users
-class AuthType(Enum):
-    LOCAL = "local"
-    GOOGLE = "google"
-    GITHUB = "github"
-    # Add more as needed
+from app.utils.enums import AuthType, UserRole
 
 
 class User(Base):
@@ -27,4 +18,5 @@ class User(Base):
         String, unique=True, nullable=True
     )  # For OAuth or external providers
     auth_type = Column(SQLEnum(AuthType), nullable=False, default=AuthType.LOCAL)
+    role = Column(SQLEnum(UserRole), nullable=False, default=UserRole.USER)
     created_at = Column(DateTime, nullable=False)

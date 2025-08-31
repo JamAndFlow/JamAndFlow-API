@@ -7,9 +7,10 @@ from fastapi.responses import JSONResponse
 from app.config.github import github
 from app.config.google import google
 from app.models.user import User
-from app.schemas.users import AuthType, UserCreate
+from app.schemas.users import UserCreate
 from app.services.user import create_user
 from app.utils.auth import create_access_token, verify_password
+from app.utils.enums import AuthType
 
 
 def authenticate_user(db, email: str, password: str):
@@ -41,7 +42,7 @@ def create_github_user(profile, email: str, db):
         name=name,
         is_active=True,
         provider_id=provider_id,
-        auth_type=AuthType.github,
+        auth_type=AuthType.GITHUB,
     )
     user = create_user(db, user_in)
     return user
@@ -56,7 +57,7 @@ def create_google_user(profile, email: str, db):
         name=name,
         is_active=True,
         provider_id=provider_id,
-        auth_type=AuthType.google,
+        auth_type=AuthType.GOOGLE,
     )
     user = create_user(db, user_in)
     return user

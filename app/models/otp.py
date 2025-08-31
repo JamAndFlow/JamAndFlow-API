@@ -13,8 +13,6 @@ class OTP(Base):
     name = Column(String, nullable=False)
     password = Column(String, nullable=True)
     is_active = Column(Integer, default=1)  # 1 for True, 0 for False
-    provider_id = Column(String, nullable=True)
-    auth_type = Column(String, nullable=False, default="local")
     created_at = Column(DateTime, default=datetime.utcnow)
     expires_at = Column(DateTime, nullable=False)
 
