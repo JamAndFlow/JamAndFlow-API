@@ -1,8 +1,9 @@
 from datetime import datetime
-from enum import Enum
 from typing import Optional
 
 from pydantic import BaseModel, EmailStr
+
+from app.utils.enums import AuthType, UserRole
 
 
 class OTPVerifyRequest(BaseModel):
@@ -10,19 +11,13 @@ class OTPVerifyRequest(BaseModel):
     otp_code: str
 
 
-class AuthType(str, Enum):
-    local = "local"
-    google = "google"
-    github = "github"
-    # Add more as needed
-
-
 class UserBase(BaseModel):
     email: EmailStr
     name: str
     is_active: bool = True
-    auth_type: AuthType = AuthType.local
+    auth_type: AuthType = AuthType.LOCAL
     provider_id: Optional[str] = None
+    role: UserRole = UserRole.USER
 
 
 class UserCreate(UserBase):
@@ -36,6 +31,7 @@ class UserUpdate(BaseModel):
     is_active: Optional[bool] = True
     auth_type: Optional[AuthType] = None
     provider_id: Optional[str] = None
+    role: Optional[UserRole] = None
 
 
 class UserInDB(UserBase):
