@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Depends
 
 from app.rbac import check_for_permission
+from app.schemas.questions import TechDescription
 from app.settings import settings
 from app.utils.http_client import make_request
-from app.schemas.questions import TechDescription
 
 router = APIRouter()
 
@@ -19,6 +19,7 @@ def get_daily_questions(
     url = f"{GENERATOR_SERVICE_URL}/api/v1/questions/get_daily_question"
     return make_request("GET", url)
 
+
 @router.post("/generate_question")
 def generate_question(
     user_prompt: str,
@@ -26,8 +27,10 @@ def generate_question(
 ):
     """Generate a new question based on topic and difficulty."""
     url = f"{GENERATOR_SERVICE_URL}/api/v1/questions/generate_question"
+
     payload = {"user_prompt": user_prompt}
     return make_request("POST", url, json=payload)
+
 
 @router.post("/add_tech_description")
 def add_tech_description(

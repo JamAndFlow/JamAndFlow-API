@@ -13,6 +13,7 @@ class TechDescriptionMetadata(BaseModel):
     topic: str
     tech_stack: str
     difficulty: str
+
     tags: str
 
 
