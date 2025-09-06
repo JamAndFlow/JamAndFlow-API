@@ -19,14 +19,15 @@ def get_daily_questions(
     url = f"{GENERATOR_SERVICE_URL}/api/v1/questions/get_daily_question"
     return make_request("GET", url)
 
-
+#TODO: user prompt should be in request body
 @router.post("/generate_question")
 def generate_question(
     user_prompt: str,
     _check_permission=Depends(check_for_permission("VIEW_QUESTIONS")),
 ):
     """Generate a new question based on topic and difficulty."""
-    url = f"{GENERATOR_SERVICE_URL}/api/v1/questions/generate_question"
+    #TODO: change endpoint to generate_question
+    url = f"{GENERATOR_SERVICE_URL}/api/v1/questions/generate_daily_question"
 
     payload = {"user_prompt": user_prompt}
     return make_request("POST", url, json=payload)
