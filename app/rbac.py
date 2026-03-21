@@ -3,6 +3,7 @@ from fastapi import Depends, HTTPException, status
 from app.services.user import get_current_user
 from app.utils.enums import UserRole
 
+# TODO: rename this to admin Features
 FEATURES = [
     "VIEW_QUESTIONS",
     "MODIFY_QUESTIONS",
